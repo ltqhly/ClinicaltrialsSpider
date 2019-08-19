@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, division, unicode_literals
 import scrapy
-from collections import defaultdict
-from scrapy.loader.processors import Join, MapCompose, TakeFirst, Identity
-from scrapy.loader.processors import Compose, SelectJmes, MergeDict
-from scrapy.loader import ItemLoader
-from scrapy.item import Item
 from .base import BaseItem
 
 
