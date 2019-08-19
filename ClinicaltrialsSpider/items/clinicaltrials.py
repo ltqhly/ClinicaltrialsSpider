@@ -10,12 +10,14 @@ from .base import BaseItem
 
 
 class ClinicaltrialsItem(BaseItem):
+    url = scrapy.Field()
     conditions = scrapy.Field()
     studies = scrapy.Field()
     row = scrapy.Field()
     nct_number = scrapy.Field()
     status = scrapy.Field()
     study_title = scrapy.Field()
+    study_title_url = scrapy.Field()
     detail_conditions = scrapy.Field()
     interventions = scrapy.Field()
     study_type = scrapy.Field()

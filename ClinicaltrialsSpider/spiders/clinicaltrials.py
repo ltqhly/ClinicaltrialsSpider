@@ -12,6 +12,8 @@ from ClinicaltrialsSpider.items import ClinicaltrialsItem
 from ClinicaltrialsSpider.loaders import ClinicaltrialsItemLoader
 from ClinicaltrialsSpider.utils import remove_html
 from .base import BaseSpider
+from datetime import datetime
+
 
 class Clinicaltrials(BaseSpider):
     name = "clinicaltrials"
@@ -190,7 +192,8 @@ class Clinicaltrials(BaseSpider):
         body = response.body
         msg_list = body.decode(encoding='utf-8')
         data_str = re.findall(r'<script type="text/javascript">\nvar tableData1 =([\s\S]+?)];.*?', msg_list)[0]
-        data_str = data_str.replace('\n', '').replace('\t', '').replace('\r', '').replace(' [        ', '').replace('\\', '')
+        data_str = data_str.replace('\n', '').replace('\t', '').replace('\r', '').replace(' [        ', '').replace(
+            '\\', '')
         rule_text = r'>.*?</a>.*?]'
         data_list = re.findall(rule_text, data_str, re.I | re.S | re.M)
         for data in data_list:
@@ -217,13 +220,21 @@ class Clinicaltrials(BaseSpider):
             for data in data_list:
                 data = remove_html(data)
                 all_data.append(data)
+
+            study_title_url = ""
+            soup = BeautifulSoup(data_list[3], 'lxml')
+            for k in soup.find_all('a'):
+                study_title_url = k['href']
+            study_title_url = "https://clinicaltrials.gov/{}".format(study_title_url)
             l = ClinicaltrialsItemLoader(item=ClinicaltrialsItem(), response=html_response)
+            l.add_value("url", response.url)
             l.add_value("conditions", conditions)
             l.add_value("studies", studies)
             l.add_value("row", all_data[0])
             l.add_value("nct_number", all_data[1])
             l.add_value("status", all_data[2])
             l.add_value("study_title", all_data[3])
+            l.add_value("study_title_url", study_title_url)
             l.add_value("detail_conditions", all_data[4])
             l.add_value("interventions", all_data[5])
             l.add_value("study_type", all_data[6])
@@ -245,5 +256,6 @@ class Clinicaltrials(BaseSpider):
             l.add_value("results_first_posted", all_data[22])
             l.add_value("locations", all_data[23])
             l.add_value("study_documents", all_data[24])
+            l.add_value("create_time", datetime.now())
             item = l.load_item()
             yield item

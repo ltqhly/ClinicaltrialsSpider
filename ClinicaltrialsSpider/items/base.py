@@ -11,6 +11,7 @@ import scrapy
 class BaseItem(scrapy.Item):
     # _id
     _id = scrapy.Field()
-
     # task_id
     task_id = scrapy.Field()
+    # 爬取时间
+    create_time = scrapy.Field()
